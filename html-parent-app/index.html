@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="index.css"></link>
+    <title>Document</title>
+</head>
+<body>
+
+    <label for="input-field">Enter Message to send to child: </label>
+    <p class="output">My body</p>
+    <!-- <input name="sendToChild" id="sendToChild"> -->
+    <iframe src="http://localhost:3000"></iframe>
+    <script>
+        const channel = new MessageChannel();
+        const output = document.querySelector('.output');
+        const iframe = document.querySelector('iframe');
+
+        //Here we are checking wether whole <iframe> page has loaded or not
+        //Once loaded, fire the onLoad function
+        iframe.addEventListener("load", onLoad, false);
+        function onLoad(){
+            channel.port1.onmessage = onMessage;
+            iframe.contentWindow.postMessage("Hello from the HTML page!", "*", [ channel.port2,]);
+            channel.port2.close();
+        }
+
+        function onMessage(e){
+            output.innerHTML = e.data;
+        }
+    </script>
+</body>
+</html>
